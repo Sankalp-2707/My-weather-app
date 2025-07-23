@@ -1,13 +1,281 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden; /* Prevent scroll on background */
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Main container for the whole app */
+.weather-app-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    transition: background-image 0.5s ease-in-out; /* Smooth background transition */
+    color: white;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Left main weather display area */
+.main-weather-display {
+    flex: 3; /* Takes up more space */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.3); /* Semi-transparent overlay */
+    backdrop-filter: blur(5px); /* Blurry effect */
+    position: relative;
+    overflow: hidden;
+}
+
+.main-weather-display::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2); /* Darker overlay for text readability */
+    z-index: 1;
+}
+
+.main-weather-content {
+    position: relative;
+    z-index: 2; /* Ensure content is above overlay */
+}
+
+/* Styles for current temperature and location */
+.current-temp {
+    font-size: 8rem;
+    font-weight: 700;
+    line-height: 1;
+    display: flex;
+    align-items: flex-start;
+}
+
+.current-temp sup {
+    font-size: 3rem;
+    margin-left: 10px;
+    margin-top: 20px;
+}
+
+.location-name {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.date-time-info {
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+
+.weather-description {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+/* Right sidebar area */
+.sidebar {
+    flex: 1; /* Takes up less space */
+    background: rgba(0, 0, 0, 0.6); /* Darker, more opaque sidebar */
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    min-width: 280px; /* Ensure sidebar has a minimum width */
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-header {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+/* Search section styles */
+.search-section {
+    display: flex;
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 10px;
+}
+
+.search-input {
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 1.1rem;
+    padding: 5px 0;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.search-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: color 0.2s ease;
+}
+
+.search-button:hover {
+    color: #ffd700; /* Gold color on hover */
+}
+
+/* City list section styles */
+.city-list-section {
+    margin-bottom: 30px;
+}
+
+.city-list-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    text-align: left;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.city-list ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+.city-list li {
+    padding: 10px 0;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.city-list li:last-child {
+    border-bottom: none;
+}
+
+.city-list li:hover {
+    color: #ffd700;
+}
+
+/* Weather details section styles */
+.weather-details-section {
+    flex-grow: 1; /* Takes up remaining space */
+}
+
+.weather-details-section h3 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    text-align: left;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 600;
+}
+
+.detail-value {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Loading and error messages */
+.loading-message, .error-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px 40px;
+    border-radius: 10px;
+    z-index: 100;
+    text-align: center;
+}
+
+.error-message {
+    background: rgba(255, 0, 0, 0.7);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .weather-app-container {
+        flex-direction: column;
+    }
+
+    .main-weather-display {
+        flex: 2;
+        padding: 20px;
+        justify-content: center;
+    }
+
+    .sidebar {
+        flex: 1;
+        min-width: unset;
+        width: 100%;
+        padding: 20px;
+    }
+
+    .current-temp {
+        font-size: 5rem;
+    }
+
+    .current-temp sup {
+        font-size: 2rem;
+        margin-top: 10px;
+    }
+
+    .location-name {
+        font-size: 2rem;
+    }
+
+    .date-time-info {
+        font-size: 1rem;
+    }
+
+    .weather-description {
+        font-size: 1.2rem;
+    }
+
+    .sidebar-header {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+
+    .search-input {
+        font-size: 1rem;
+    }
+
+    .search-button {
+        font-size: 1.2rem;
+    }
+
+    .city-list-section h3, .weather-details-section h3 {
+        font-size: 1rem;
+    }
+
+    .city-list li, .detail-item {
+        font-size: 0.9rem;
+    }
 }
