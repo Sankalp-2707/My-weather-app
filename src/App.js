@@ -15,7 +15,7 @@ const App = () => {
     const [error, setError] = useState(null);
 
     // IMPORTANT: Replace with your actual OpenWeatherMap API Key
-    const OPENWEATHER_API_KEY = 'f361f19ea9d87973b71639f1e1caf6b5';
+    const OPENWEATHER_API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY;
 
     const cities = ['Pune', 'Navi Mumbai', 'Delhi', 'Chennai', 'Bangalore', 'Hyderabad'];
 
